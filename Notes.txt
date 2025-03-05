@@ -1,3 +1,15 @@
 CREATING A REACT APP
 --------------------
 >> npm create vite@latest
+
+INSTALL REACT ROUTER
+--------------------
+>> npm i react-router
+
+INSTALL REACT-STRAP
+--------------------
+1. >> npm install reactstrap
+2. Include Bootstrap from a CDN URL in your HTML layout:
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"/>
+    </head>
