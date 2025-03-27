@@ -14,6 +14,8 @@ import {
 } from "reactstrap";
 import userService from "../services/user-service";
 import { AxiosError } from "axios";
+import { registerFormSchema } from "../helpers/yup-schema-validation-helper";
+import { ValidationError } from "yup";
 
 export interface RegisterFormType {
   name: string;
@@ -48,15 +50,35 @@ function Register() {
     });
   }
 
+  async function handleBlur(event: ChangeEvent<HTMLInputElement>) {
+    //Check for errors on blur event.
+    const fieldName = event.target.name;
+    try {
+      await registerFormSchema.validateAt(fieldName, stateData);
+      setErrors({ ...errors, [fieldName]: undefined });
+    } catch (validationError: any) {
+      setErrors({ ...errors, [fieldName]: validationError.message });
+    }
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {
-      const response = await userService.registerUser(stateData);
+      // Check for errors on submitting as well.
+      const validData = await registerFormSchema.validate(stateData, {abortEarly: false,});
+      const response = await userService.registerUser(validData);
       console.log("User Registered Successfully !!", response.data);
       setErrors({});
       setStateData(initialRegisterFormStateData);
     } catch (error: unknown) {
-      if (error instanceof AxiosError) {
+      if (error instanceof ValidationError) {
+        const newErrors: Partial<RegisterFormType> = {};
+        error.inner.forEach((error: any) => {
+          newErrors[error.path as keyof CustomFormValidationErrorType] =
+            error.message;
+        });
+        setErrors(newErrors);
+      } else if (error instanceof AxiosError) {
         if (error.status === 409) {
           console.log("User Already Registered !!");
         } else if (error.status === 400) {
@@ -96,6 +118,7 @@ function Register() {
                       type="text"
                       value={stateData.name}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       invalid={errors?.name ? true : false}
                     />
                     <FormFeedback>{errors?.name}</FormFeedback>
@@ -109,6 +132,7 @@ function Register() {
                       type="text"
                       value={stateData.username}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       invalid={errors?.username ? true : false}
                     />
                     <FormFeedback>{errors?.username}</FormFeedback>
@@ -122,6 +146,7 @@ function Register() {
                       type="password"
                       value={stateData.password}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       invalid={errors?.password ? true : false}
                     />
                     <FormFeedback>{errors?.password}</FormFeedback>

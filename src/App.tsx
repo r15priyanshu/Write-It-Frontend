@@ -1,8 +1,9 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import "./App.css";
-import Login from "./pages/Login";
+// import Login from "./pages/Login";
 import Register from "./pages/Register";
 import BaseLayout from "./pages/BaseLayout";
+// import Home from "./pages/Home";
 
 function App() {
   return (
@@ -11,8 +12,10 @@ function App() {
         <Routes>
           {/* NESTED ROUTE CONCEPT IS USED FOR SHARED-LAYOUT */}
           <Route path="/" element={<BaseLayout />}>
+            <Route index element={<Navigate to="/home" replace />} />
+            {/* <Route path="/home" element={<Home />} /> */}
             {/* <Route path="login" element={<Login />} /> */}
-            <Route path="signup" element={<Register />} />
+            <Route path="register" element={<Register />} />
             <Route path="*" element={<h1>NOT FOUND</h1>} />
           </Route>
         </Routes>

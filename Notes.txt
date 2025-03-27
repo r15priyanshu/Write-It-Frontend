@@ -13,3 +13,7 @@ INSTALL REACT-STRAP
     <head>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"/>
     </head>
+
+INSTALL YUP FOR CLIENT SIDE FORM VALIDATION
+--------------------
+1. >> npm install yup
