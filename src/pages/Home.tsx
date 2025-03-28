@@ -30,11 +30,11 @@ function Home() {
               alt="Blog Image"
               height={"250px"}
               width={"300px"}
-              className="rounded-5"
+              className="rounded-1"
             />
             <br />
-            <Link to="/signup" className="btn btn-sm btn-danger mt-2 mb-4">
-              SignUp Now
+            <Link to="/register" className="btn btn-sm btn-danger mt-2 mb-4">
+              Register Now
             </Link>
             <h3>Why Us ??</h3>
             <ul style={{listStyle:"none"}}>

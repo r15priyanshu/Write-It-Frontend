@@ -93,6 +93,7 @@ function Register() {
 
   function handleReset() {
     setStateData(initialRegisterFormStateData);
+    setErrors({});
   }
 
   return (
