@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { data, NavLink } from "react-router";
+import { NavLink } from "react-router";
 import {
   Card,
   CardHeader,
@@ -13,6 +13,9 @@ import {
   FormFeedback,
 } from "reactstrap";
 import { loginFormSchema } from "../helpers/yup-schema-validation-helper";
+import LoginAndRegisterService from "../services/login-and-register-service";
+import { ValidationError } from "yup";
+import { AxiosError } from "axios";
 
 export interface LoginFormType {
   username: string;
@@ -36,7 +39,7 @@ function Login() {
     initialLoginFormStateData
   );
 
-  const [errors, setErrors] = useState<CustomFormValidationErrorType>({});
+  const [validationErrors, setValidationErrors] = useState<CustomFormValidationErrorType>({});
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     setStateData((oldStateData) => {
@@ -49,9 +52,9 @@ function Login() {
     const fieldName = event.target.name;
     try {
       await loginFormSchema.validateAt(fieldName, stateData);
-      setErrors({ ...errors, [fieldName]: undefined });
-    } catch (validationError: any) {
-      setErrors({ ...errors, [fieldName]: validationError.message });
+      setValidationErrors({ ...validationErrors, [fieldName]: undefined });
+    } catch (error: any) {
+      setValidationErrors({ ...validationErrors, [fieldName]: error.message });
     }
   }
 
@@ -61,24 +64,36 @@ function Login() {
     try {
       // Check for errors on submitting as well.
       // Clear previous errors if any.
-      setErrors({});
-      const validData = await loginFormSchema.validate(stateData, {
-        abortEarly: false,
-      });
-    } catch (validationErrors: any) {
-      // If validation fails, set the errors
-      const newErrors: Partial<LoginFormType> = {};
-      validationErrors.inner.forEach((error: any) => {
-        newErrors[error.path as keyof CustomFormValidationErrorType] =
-          error.message;
-      });
-      setErrors(newErrors);
+      setValidationErrors({});
+      const validLoginRequestData = await loginFormSchema.validate(stateData, {abortEarly: false});
+      const response = await LoginAndRegisterService.performLogin(validLoginRequestData);
+      const user = response.data;
+
+      //Extract The Token From Header
+      const token = "DEMO-TOKEN-FOR-NOW";
+      LoginAndRegisterService.performOperationsOnLogin(token, user);
+      handleReset();
+      console.log("Login Successful !!")
+    } catch (error: any) {
+      if (error instanceof ValidationError) {
+        // If validation fails, set the errors
+        const newErrors: Partial<LoginFormType> = {};
+        error.inner.forEach((error: any) => {
+          newErrors[error.path as keyof CustomFormValidationErrorType] =
+            error.message;
+        });
+        setValidationErrors(newErrors);
+      } else if (error instanceof AxiosError) {
+        console.log("Login Failed !!", error.response?.data.message);
+      } else {
+        console.log("Something Went Wrong !!", error);
+      }
     }
   }
 
   function handleReset() {
     setStateData(initialLoginFormStateData);
-    setErrors({});
+    setValidationErrors({});
   }
 
   return (
@@ -105,9 +120,9 @@ function Login() {
                       value={stateData.username}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      invalid={errors?.username ? true : false}
+                      invalid={validationErrors?.username ? true : false}
                     />
-                    <FormFeedback>{errors?.username}</FormFeedback>
+                    <FormFeedback>{validationErrors?.username}</FormFeedback>
                   </FormGroup>
                   <FormGroup>
                     <Label for="password">Password</Label>
@@ -116,12 +131,13 @@ function Login() {
                       name="password"
                       placeholder="Enter Password"
                       type="password"
+                      autoComplete="off"
                       value={stateData.password}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      invalid={errors?.password ? true : false}
+                      invalid={validationErrors?.password ? true : false}
                     />
-                    <FormFeedback>{errors?.password}</FormFeedback>
+                    <FormFeedback>{validationErrors?.password}</FormFeedback>
                   </FormGroup>
                   <div className="container text-center">
                     <Button className="btn btn-sm">Submit</Button>

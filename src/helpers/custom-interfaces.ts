@@ -13,3 +13,8 @@ export interface RoleType {
   roleId: number;
   roleName: string;
 }
+
+export interface LoginRequestType {
+  username: string;
+  password: string;
+}

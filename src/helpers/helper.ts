@@ -1,3 +1,3 @@
 import axios from "axios";
-const BASEURL = "http://localhost:8080";
-export const myaxios = axios.create({ baseURL: BASEURL });
+export const BACKEND_BASE_URL = "http://localhost:8080";
+export const myaxios = axios.create({ baseURL: BACKEND_BASE_URL });
