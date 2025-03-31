@@ -17,3 +17,7 @@ INSTALL REACT-STRAP
 INSTALL YUP FOR CLIENT SIDE FORM VALIDATION
 --------------------
 1. >> npm install yup
+
+INSTALL REDUX TOOLKIT FOR APPLICATION WIDE STATE MANAGEMENT
+--------------------
+1. >>npm install @reduxjs/toolkit react-redux

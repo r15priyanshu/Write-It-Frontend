@@ -1,5 +1,6 @@
 import { Outlet } from "react-router";
 import MyNavbar from "../components/MyNavbar";
+import MyFooter from "../components/MyFooter";
 
 function BaseLayout() {
   console.log("BaseLayout Rendered !!");
@@ -7,7 +8,7 @@ function BaseLayout() {
     <>
       <MyNavbar />
       <Outlet />
-      <h1>Footer</h1>
+      <MyFooter/>
     </>
   );
 }

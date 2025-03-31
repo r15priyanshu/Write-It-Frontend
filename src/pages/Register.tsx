@@ -145,6 +145,7 @@ function Register() {
                       name="password"
                       placeholder="Enter Password"
                       type="password"
+                      autoComplete="off"
                       value={stateData.password}
                       onChange={handleChange}
                       onBlur={handleBlur}

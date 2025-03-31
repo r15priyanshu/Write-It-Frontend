@@ -13,9 +13,11 @@ import {
   FormFeedback,
 } from "reactstrap";
 import { loginFormSchema } from "../helpers/yup-schema-validation-helper";
-import LoginAndRegisterService from "../services/login-and-register-service";
+import AuthService from "../services/auth-service";
 import { ValidationError } from "yup";
 import { AxiosError } from "axios";
+import { useDispatch } from "react-redux";
+import { updateLoggedInUserDetailsAction } from "../redux-toolkit/authSlice";
 
 export interface LoginFormType {
   username: string;
@@ -34,6 +36,7 @@ interface CustomFormValidationErrorType {
 
 function Login() {
   console.log("Login Page Rendered !!");
+  const dispatch = useDispatch()
 
   const [stateData, setStateData] = useState<LoginFormType>(
     initialLoginFormStateData
@@ -66,12 +69,13 @@ function Login() {
       // Clear previous errors if any.
       setValidationErrors({});
       const validLoginRequestData = await loginFormSchema.validate(stateData, {abortEarly: false});
-      const response = await LoginAndRegisterService.performLogin(validLoginRequestData);
+      const response = await AuthService.performLogin(validLoginRequestData);
       const user = response.data;
 
       //Extract The Token From Header
       const token = "DEMO-TOKEN-FOR-NOW";
-      LoginAndRegisterService.performOperationsOnLogin(token, user);
+      AuthService.performOperationsOnLogin(token, user);
+      dispatch(updateLoggedInUserDetailsAction(user))
       handleReset();
       console.log("Login Successful !!")
     } catch (error: any) {

@@ -9,9 +9,13 @@ import {
   NavItem,
   NavLink,
 } from "reactstrap";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux-toolkit/store";
 
-function MyNavbar(props) {
-  const navigate = useNavigate();
+function MyNavbar() {
+  console.log("MyNavbar Component Rendered !!");
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const loggedInUserDetails = useSelector((state: RootState) => state.auth.loggedInUserDetails);
 
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
@@ -45,16 +49,31 @@ function MyNavbar(props) {
           </Nav>
 
           <Nav className="ms-auto" navbar>
-            <NavItem>
-              <NavLink tag={ReactNavLink} to="/login">
-                LOGIN
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink tag={ReactNavLink} to="/register">
-                REGISTER
-              </NavLink>
-            </NavItem>
+            {isLoggedIn ? (
+              <>
+                <NavItem>
+                  <NavLink tag={ReactNavLink} to={`/profile`}>
+                    {loggedInUserDetails?.name.toUpperCase()}
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink onClick={handleLogout}>LOGOUT</NavLink>
+                </NavItem>
+              </>
+            ) : (
+              <>
+                <NavItem>
+                  <NavLink tag={ReactNavLink} to="/login">
+                    LOGIN
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={ReactNavLink} to="/register">
+                    REGISTER
+                  </NavLink>
+                </NavItem>
+              </>
+            )}
           </Nav>
         </Collapse>
       </Navbar>
