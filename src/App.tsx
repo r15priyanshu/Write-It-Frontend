@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import BaseLayout from "./pages/BaseLayout";
 import Home from "./pages/Home";
 import About from "./pages/About";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route index element={<Navigate to="/home" replace />} />
             <Route path="home" element={<Home />} />
             <Route path="about" element={<About />} />
+            <Route path="profile" element={<Profile />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="*" element={<h1>NOT FOUND</h1>} />
